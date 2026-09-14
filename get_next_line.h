@@ -8,5 +8,5 @@
 #include <unistd.h>
 char *get_next_line(int fd);
 int find_newline(char *str);
-
+char *update(char *stash, char *buffer, ssize_t bytes_read);
 #endif
