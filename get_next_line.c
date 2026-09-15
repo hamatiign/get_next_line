@@ -19,10 +19,8 @@ char	*get_next_line(int fd)
 			stash = NULL;
 			return (NULL);
 		}
-
 		if (bytes_read == 0)
 			break ;
-
 		buffer[bytes_read] = '\0';
 		stash = update(stash, buffer, bytes_read);
 		if (stash == NULL)
