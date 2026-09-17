@@ -1,7 +1,10 @@
-# Test files
+# Tester
+gnlTester/
+
+# Local test files
 main.c
 target.txt
+target2.txt
 
-# Build files
-*.o
+# Executables
 a.out
