@@ -7,6 +7,7 @@ char	*get_next_line(int fd)
 	static char	*stash;
 	char		buffer[BUFFER_SIZE + 1];
 	ssize_t		bytes_read;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -22,10 +23,17 @@ char	*get_next_line(int fd)
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
-		stash = update(stash, buffer, bytes_read);
+		stash = append_stash(stash, buffer, bytes_read);
 		if (stash == NULL)
-		{
 			return (NULL);
-		}
 	}
+	line = extract_line(stash);
+	if (line == NULL)
+	{
+		free(stash);
+		stash = NULL;
+		return (NULL);
+	}
+	stash = trim_stash(stash);
+	return (line);
 }

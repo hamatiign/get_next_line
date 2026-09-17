@@ -1,0 +1,7 @@
+# Test files
+main.c
+target.txt
+
+# Build files
+*.o
+a.out

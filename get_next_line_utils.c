@@ -6,6 +6,7 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
+	if(s == NULL) return (0);
 	i = 0;
 	while (s[i])
 		i++;
@@ -32,7 +33,7 @@ char	*append_stash(char *stash, char *buffer, ssize_t bytes_read)
 {
 	size_t	stash_len;
 	char	*new_stash;
-	int		i;
+    size_t		i;
 
 	i = 0;
 	if (stash == NULL)
@@ -68,6 +69,8 @@ char	*extract_line(char *stash)
 	const int	newline_index = find_newline(stash);
 	int			i;
 
+	if(stash == NULL) line_len = 0;
+
 	if (newline_index == -1)
 		line_len = ft_strlen(stash);
 	else
@@ -90,7 +93,7 @@ char	*trim_stash(char *stash)
 	char		*new_stash;
 	const int	newline_index = find_newline(stash);
 	size_t		new_size;
-	int			i;
+	size_t		i;
 
 	if (newline_index == -1)
 	{
@@ -99,9 +102,11 @@ char	*trim_stash(char *stash)
 	}
 	i = 0;
 	new_size = ft_strlen(stash) - newline_index;
-	if (new_size == 1){
-    free(stash);
-		return (NULL);}
+	if (new_size == 1)
+	{
+		free(stash);
+		return (NULL);
+	}
 	new_stash = (char *)malloc((sizeof(char) * new_size));
 	if (new_stash == NULL)
 	{

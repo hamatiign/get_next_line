@@ -8,5 +8,7 @@
 #include <unistd.h>
 char *get_next_line(int fd);
 int find_newline(char *str);
-char *update(char *stash, char *buffer, ssize_t bytes_read);
+char	*append_stash(char *stash, char *buffer, ssize_t bytes_read);
+char	*extract_line(char *stash);
+char	*trim_stash(char *stash);
 #endif
