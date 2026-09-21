@@ -6,7 +6,7 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 18:41:42 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/17 18:41:53 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/22 03:58:36 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,17 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (buffer == NULL)
+	{
+		free(buffer);
 		return (NULL);
+	}
 	while (find_newline(stash) == -1)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
 		{
 			free(stash);
+			free(buffer);
 			stash = NULL;
 			return (NULL);
 		}
@@ -39,20 +43,21 @@ char	*get_next_line(int fd)
 			break ;
 		buffer[bytes_read] = '\0';
 		stash = append_stash(stash, buffer, bytes_read);
-		if (stash == NULL)
-			return (NULL);
 	}
-	if(stash == NULL){
+	if (stash == NULL)
+	{
 		free(buffer);
-		return(NULL);
+		return (NULL);
 	}
 	line = extract_line(stash);
 	if (line == NULL)
 	{
 		free(stash);
+		free(buffer);
 		stash = NULL;
 		return (NULL);
 	}
 	stash = trim_stash(stash);
+  free(buffer);
 	return (line);
 }
