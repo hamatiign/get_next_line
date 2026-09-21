@@ -6,7 +6,7 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 18:41:42 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 06:38:03 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/22 06:43:30 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ char	*get_next_line(int fd)
 		stash = NULL;
 		return (NULL);
 	}
-	stash = trim_stash(stash, &stash_len);
+	stash = trim_stash(stash);
   free(buffer);
 	return (line);
 }

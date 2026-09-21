@@ -12,5 +12,5 @@ int find_newline(char *str);
 char *append_stash(char *stash, char *buffer, ssize_t bytes_read,
                    size_t *stash_len);
 char *extract_line(char *stash);
-char *trim_stash(char *stash, size_t *stash_len);
+char *trim_stash(char *stash);
 #endif

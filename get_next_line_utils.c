@@ -6,7 +6,7 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 19:01:48 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 06:35:00 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/22 06:43:11 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,13 @@ char	*extract_line(char *stash)
 	return (ret_str);
 }
 
-char	*trim_stash(char *stash,size_t *stash_len)
+char	*trim_stash(char *stash)
 {
 	char		*new_stash;
 	const int	newline_index = find_newline(stash);
 	size_t		new_size;
 	size_t		i;
+  size_t stash_len = ft_strlen(stash);
 
 	if (newline_index == -1)
 	{
@@ -109,7 +110,7 @@ char	*trim_stash(char *stash,size_t *stash_len)
 		return (NULL);
 	}
 	i = 0;
-	new_size = *stash_len - newline_index;
+	new_size = stash_len - newline_index;
 	if (new_size == 1)
 	{
 		free(stash);
@@ -127,7 +128,6 @@ char	*trim_stash(char *stash,size_t *stash_len)
 		i++;
 	}
 	new_stash[i] = '\0';
-  *stash_len -= (newline_index + 1);
 	free(stash);
 	return (new_stash);
 }
