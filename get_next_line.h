@@ -7,8 +7,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 char *get_next_line(int fd);
+size_t ft_strlen(const char *s);
 int find_newline(char *str);
-char	*append_stash(char *stash, char *buffer, ssize_t bytes_read);
-char	*extract_line(char *stash);
-char	*trim_stash(char *stash);
+char *append_stash(char *stash, char *buffer, ssize_t bytes_read,
+                   size_t *stash_len);
+char *extract_line(char *stash);
+char *trim_stash(char *stash, size_t *stash_len);
 #endif

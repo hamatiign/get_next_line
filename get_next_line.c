@@ -6,11 +6,12 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 18:41:42 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 03:58:36 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/22 06:38:03 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -20,6 +21,7 @@ char	*get_next_line(int fd)
 	char		*buffer;
 	ssize_t		bytes_read;
 	char		*line;
+  size_t stash_len;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -29,6 +31,7 @@ char	*get_next_line(int fd)
 		free(buffer);
 		return (NULL);
 	}
+  stash_len = ft_strlen(stash);
 	while (find_newline(stash) == -1)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
@@ -38,11 +41,10 @@ char	*get_next_line(int fd)
 			free(buffer);
 			stash = NULL;
 			return (NULL);
-		}
-		if (bytes_read == 0)
+		} if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
-		stash = append_stash(stash, buffer, bytes_read);
+		stash = append_stash(stash, buffer, bytes_read, &stash_len);
 	}
 	if (stash == NULL)
 	{
@@ -57,7 +59,7 @@ char	*get_next_line(int fd)
 		stash = NULL;
 		return (NULL);
 	}
-	stash = trim_stash(stash);
+	stash = trim_stash(stash, &stash_len);
   free(buffer);
 	return (line);
 }

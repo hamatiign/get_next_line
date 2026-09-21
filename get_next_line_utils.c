@@ -6,13 +6,14 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 19:01:48 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 03:56:41 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/22 06:35:00 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/types.h>
 
 size_t	ft_strlen(const char *s)
 {
@@ -41,32 +42,31 @@ int	find_newline(char *str)
 	return (-1);
 }
 
-char	*append_stash(char *stash, char *buffer, ssize_t bytes_read)
+char	*append_stash(char *stash, char *buffer, ssize_t bytes_read, size_t *stash_len)
 {
-	size_t	stash_len;
 	char	*new_stash;
     size_t		i;
 
 	i = 0;
-		stash_len = ft_strlen(stash);
-	new_stash = (char *)malloc((sizeof(char)) * (stash_len + bytes_read + 1));
+	new_stash = (char *)malloc((sizeof(char)) * (*stash_len + bytes_read + 1));
 	if (new_stash == NULL)
 	{
 		free(stash);
 		return (NULL);
 	}
-	while (i < stash_len)
+	while (i < *stash_len)
 	{
 		new_stash[i] = stash[i];
 		i++;
 	}
-	while (i < bytes_read + stash_len)
+	while (i < bytes_read + *stash_len)
 	{
 		new_stash[i] = *buffer;
 		buffer++;
 		i++;
 	}
 	new_stash[i] = '\0';
+  *stash_len += bytes_read;
 	free(stash);
 	return (new_stash);
 }
@@ -96,7 +96,7 @@ char	*extract_line(char *stash)
 	return (ret_str);
 }
 
-char	*trim_stash(char *stash)
+char	*trim_stash(char *stash,size_t *stash_len)
 {
 	char		*new_stash;
 	const int	newline_index = find_newline(stash);
@@ -109,7 +109,7 @@ char	*trim_stash(char *stash)
 		return (NULL);
 	}
 	i = 0;
-	new_size = ft_strlen(stash) - newline_index;
+	new_size = *stash_len - newline_index;
 	if (new_size == 1)
 	{
 		free(stash);
@@ -127,6 +127,7 @@ char	*trim_stash(char *stash)
 		i++;
 	}
 	new_stash[i] = '\0';
+  *stash_len -= (newline_index + 1);
 	free(stash);
 	return (new_stash);
 }
