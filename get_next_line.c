@@ -6,7 +6,7 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 18:41:42 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 06:43:30 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/23 09:49:42 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*get_next_line(int fd)
 	char		*buffer;
 	ssize_t		bytes_read;
 	char		*line;
-  size_t stash_len;
+	size_t		stash_len;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -31,20 +31,29 @@ char	*get_next_line(int fd)
 		free(buffer);
 		return (NULL);
 	}
-  stash_len = ft_strlen(stash);
-	while (find_newline(stash) == -1)
+	stash_len = ft_strlen(stash);
+	if (find_newline(stash) == -1)
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
+    while(1)
 		{
-			free(stash);
-			free(buffer);
-			stash = NULL;
-			return (NULL);
-		} if (bytes_read == 0)
-			break ;
-		buffer[bytes_read] = '\0';
-		stash = append_stash(stash, buffer, bytes_read, &stash_len);
+			bytes_read = read(fd, buffer, BUFFER_SIZE);
+			if (bytes_read == -1)
+			{
+				free(stash);
+				free(buffer);
+				stash = NULL;
+				return (NULL);
+			}
+			if (bytes_read == 0)
+				break ;
+			buffer[bytes_read] = '\0';
+			stash = append_stash(stash, buffer, bytes_read, &stash_len);
+      if(stash == NULL){
+        free(buffer);
+        return (NULL);
+      }
+      if(find_newline(buffer) != -1) break;
+		}
 	}
 	if (stash == NULL)
 	{
@@ -60,6 +69,6 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	stash = trim_stash(stash);
-  free(buffer);
+	free(buffer);
 	return (line);
 }
