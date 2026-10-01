@@ -14,16 +14,10 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-char *free_stash(char ** stash){
+char	*free_stash(char **stash)
+{
 	free(*stash);
 	*stash = NULL;
-	return (NULL);
-}
-
-char *cleanup(char **stash, char *buffer){
-	free(*stash);
-	*stash = NULL;
-	free(buffer);
 	return (NULL);
 }
 
@@ -37,23 +31,11 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-int	find_newline(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str == NULL)
-		return (-1);
-	while (str[i] && str[i] != '\n')
-		i++;
-	if(str[i] == '\n') return(i);
-	return (-1);
-}
-
-char	*append_stash(char *stash, char *buffer, ssize_t bytes_read, size_t *stash_len)
+char	*append_stash(char *stash, char *buffer, ssize_t bytes_read,
+		size_t *stash_len)
 {
 	char	*new_stash;
-    size_t		i;
+	size_t	i;
 
 	i = 0;
 	new_stash = (char *)malloc((sizeof(char)) * (*stash_len + bytes_read + 1));
@@ -68,9 +50,9 @@ char	*append_stash(char *stash, char *buffer, ssize_t bytes_read, size_t *stash_
 		i++;
 	}
 	while (i < bytes_read + *stash_len)
-	 new_stash[i++] = *buffer++;
+		new_stash[i++] = *buffer++;
 	new_stash[i] = '\0';
-  *stash_len += bytes_read;
+	*stash_len += bytes_read;
 	free(stash);
 	return (new_stash);
 }
@@ -82,7 +64,6 @@ char	*extract_line(char *stash)
 	const int	newline_index = find_newline(stash);
 	int			i;
 
-
 	if (newline_index == -1)
 		line_len = ft_strlen(stash);
 	else
@@ -92,7 +73,7 @@ char	*extract_line(char *stash)
 	if (ret_str == NULL)
 		return (NULL);
 	while (i < line_len)
-	ret_str[i++] = *stash++;
+		ret_str[i++] = *stash++;
 	ret_str[i] = '\0';
 	return (ret_str);
 }
@@ -103,26 +84,18 @@ char	*trim_stash(char *stash)
 	const int	newline_index = find_newline(stash);
 	size_t		new_size;
 	size_t		i;
-  size_t stash_len = ft_strlen(stash);
+	size_t		stash_len;
 
+	stash_len = ft_strlen(stash);
 	if (newline_index == -1)
-	{
-		free(stash);
-		return (NULL);
-	}
+		return (free_stash(&stash));
 	i = 0;
 	new_size = stash_len - newline_index;
 	if (new_size == 1)
-	{
-		free(stash);
-		return (NULL);
-	}
+		return (free_stash(&stash));
 	new_stash = (char *)malloc((sizeof(char) * new_size));
 	if (new_stash == NULL)
-	{
-		free(stash);
-		return (NULL);
-	}
+		return (free_stash(&stash));
 	while (i < new_size - 1)
 	{
 		new_stash[i] = stash[i + newline_index + 1];

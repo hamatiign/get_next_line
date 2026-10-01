@@ -11,9 +11,49 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+char	*cleanup(char **stash, char *buffer)
+{
+	free(*stash);
+	*stash = NULL;
+	free(buffer);
+	return (NULL);
+}
+
+int	find_newline(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str == NULL)
+		return (-1);
+	while (str[i] && str[i] != '\n')
+		i++;
+	if (str[i] == '\n')
+		return (i);
+	return (-1);
+}
+
+static int	read_to_stash(int fd, char **stash, char *buffer, size_t *stash_len)
+{
+	ssize_t	bytes_read;
+
+	while (find_newline(*stash) == -1)
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == -1)
+			return (-1);
+		if (bytes_read == 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		*stash = append_stash(*stash, buffer, bytes_read, stash_len);
+		if (*stash == NULL)
+			return (-1);
+	}
+	return (0);
+}
 
 char	*get_next_line(int fd)
 {
@@ -29,44 +69,14 @@ char	*get_next_line(int fd)
 	if (buffer == NULL)
 		return (NULL);
 	stash_len = ft_strlen(stash);
-	if (find_newline(stash) == -1)
-	{
-		while (1)
-		{
-			bytes_read = read(fd, buffer, BUFFER_SIZE);
-			if (bytes_read == -1)
-			{
-				free(stash);
-				free(buffer);
-				stash = NULL;
-				return (NULL);
-			}
-			if (bytes_read == 0)
-				break ;
-			buffer[bytes_read] = '\0';
-			stash = append_stash(stash, buffer, bytes_read, &stash_len);
-			if (stash == NULL)
-			{
-				free(buffer);
-				return (NULL);
-			}
-			if (find_newline(buffer) != -1)
-				break ;
-		}
-	}
+	if (read_to_stash(fd, &stash, buffer, &stash_len) == -1)
+		;
+	return (cleanup(&stash, buffer));
 	if (stash == NULL)
-	{
-		free(buffer);
-		return (NULL);
-	}
+		return (cleanup(&stash, buffer));
 	line = extract_line(stash);
 	if (line == NULL)
-	{
-		free(stash);
-		free(buffer);
-		stash = NULL;
-		return (NULL);
-	}
+		return (cleanup(&stash, buffer));
 	stash = trim_stash(stash);
 	free(buffer);
 	return (line);
