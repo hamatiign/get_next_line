@@ -6,5 +6,9 @@ main.c
 target.txt
 target2.txt
 
+#PDf
+*.pdf
+*.Identifier
+
 # Executables
 a.out

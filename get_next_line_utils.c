@@ -6,22 +6,33 @@
 /*   By: nkato <nkato@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/17 19:01:48 by nkato             #+#    #+#             */
-/*   Updated: 2026/09/22 06:43:11 by nkato            ###   ########.fr       */
+/*   Updated: 2026/09/17 19:01:50 by nkato            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <sys/types.h>
+
+char *free_stash(char ** stash){
+	free(*stash);
+	*stash = NULL;
+	return (NULL);
+}
+
+char *cleanup(char **stash, char *buffer){
+	free(*stash);
+	*stash = NULL;
+	free(buffer);
+	return (NULL);
+}
 
 size_t	ft_strlen(const char *s)
 {
 	size_t	i;
 
-	if(s == NULL) return (0);
 	i = 0;
-	while (s[i])
+	while (s && s[i])
 		i++;
 	return (i);
 }
@@ -33,12 +44,9 @@ int	find_newline(char *str)
 	i = 0;
 	if (str == NULL)
 		return (-1);
-	while (str[i])
-	{
-		if (str[i] == '\n')
-			return (i);
+	while (str[i] && str[i] != '\n')
 		i++;
-	}
+	if(str[i] == '\n') return(i);
 	return (-1);
 }
 
@@ -60,11 +68,7 @@ char	*append_stash(char *stash, char *buffer, ssize_t bytes_read, size_t *stash_
 		i++;
 	}
 	while (i < bytes_read + *stash_len)
-	{
-		new_stash[i] = *buffer;
-		buffer++;
-		i++;
-	}
+	 new_stash[i++] = *buffer++;
 	new_stash[i] = '\0';
   *stash_len += bytes_read;
 	free(stash);
@@ -88,10 +92,7 @@ char	*extract_line(char *stash)
 	if (ret_str == NULL)
 		return (NULL);
 	while (i < line_len)
-	{
-		ret_str[i] = stash[i];
-		i++;
-	}
+	ret_str[i++] = *stash++;
 	ret_str[i] = '\0';
 	return (ret_str);
 }
