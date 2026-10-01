@@ -12,9 +12,8 @@
 
 #include "get_next_line.h"
 #include <stdlib.h>
-#include <unistd.h>
 
-char	*cleanup(char **stash, char *buffer)
+static char	*cleanup(char **stash, char *buffer)
 {
 	free(*stash);
 	*stash = NULL;
@@ -59,7 +58,6 @@ char	*get_next_line(int fd)
 {
 	static char	*stash;
 	char		*buffer;
-	ssize_t		bytes_read;
 	char		*line;
 	size_t		stash_len;
 
@@ -70,8 +68,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	stash_len = ft_strlen(stash);
 	if (read_to_stash(fd, &stash, buffer, &stash_len) == -1)
-		;
-	return (cleanup(&stash, buffer));
+		return (cleanup(&stash, buffer));
 	if (stash == NULL)
 		return (cleanup(&stash, buffer));
 	line = extract_line(stash);

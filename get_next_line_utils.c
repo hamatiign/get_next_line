@@ -11,10 +11,9 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stddef.h>
 #include <stdlib.h>
 
-char	*free_stash(char **stash)
+static char	*free_stash(char **stash)
 {
 	free(*stash);
 	*stash = NULL;
