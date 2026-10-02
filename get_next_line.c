@@ -21,9 +21,9 @@ static char	*cleanup(char **stash, char *buffer)
 	return (NULL);
 }
 
-int	find_newline(char *str)
+ssize_t	find_newline(const char *str)
 {
-	int	i;
+	ssize_t	i;
 
 	i = 0;
 	if (str == NULL)
@@ -47,7 +47,7 @@ static int	read_to_stash(int fd, char **stash, char *buffer, size_t *stash_len)
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
-		*stash = append_stash(*stash, buffer, bytes_read, stash_len);
+		*stash = append_stash(*stash, buffer, (size_t)bytes_read, stash_len);
 		if (*stash == NULL)
 			return (-1);
 	}
