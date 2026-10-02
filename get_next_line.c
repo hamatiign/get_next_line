@@ -65,7 +65,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (buffer == NULL)
-		return (NULL);
+		return (cleanup(&stash, NULL));
 	stash_len = ft_strlen(stash);
 	if (read_to_stash(fd, &stash, buffer, &stash_len) == -1)
 		return (cleanup(&stash, buffer));
@@ -74,7 +74,11 @@ char	*get_next_line(int fd)
 	line = extract_line(stash);
 	if (line == NULL)
 		return (cleanup(&stash, buffer));
-	stash = trim_stash(stash);
+	if (trim_stash(&stash) == -1)
+	{
+		free(line);
+		return (cleanup(&stash, buffer));
+	}
 	free(buffer);
 	return (line);
 }

@@ -26,6 +26,6 @@ ssize_t	find_newline(const char *str);
 char	*append_stash(char *stash, const char *buffer, size_t bytes_read,
 			size_t *stash_len);
 char	*extract_line(const char *stash);
-char	*trim_stash(char *stash);
+int		trim_stash(char **stash);
 
 #endif

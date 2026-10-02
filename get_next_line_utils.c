@@ -13,11 +13,11 @@
 #include "get_next_line.h"
 #include <stdlib.h>
 
-static char	*free_stash(char **stash)
+static int	free_stash(char **stash, int status)
 {
 	free(*stash);
 	*stash = NULL;
-	return (NULL);
+	return (status);
 }
 
 size_t	ft_strlen(const char *s)
@@ -77,30 +77,30 @@ char	*extract_line(const char *stash)
 	return (ret_str);
 }
 
-char	*trim_stash(char *stash)
+int	trim_stash(char **stash)
 {
-	char			*new_stash;
-	const ssize_t	newline_index = find_newline(stash);
-	size_t			new_size;
-	size_t			i;
-	size_t			stash_len;
+	char		*new_stash;
+	ssize_t		newline_index;
+	size_t		new_size;
+	size_t		i;
 
-	stash_len = ft_strlen(stash);
+	newline_index = find_newline(*stash);
 	if (newline_index == -1)
-		return (free_stash(&stash));
-	i = 0;
-	new_size = stash_len - (size_t)newline_index;
+		return (free_stash(stash, 0));
+	new_size = ft_strlen(*stash) - (size_t)newline_index;
 	if (new_size == 1)
-		return (free_stash(&stash));
+		return (free_stash(stash, 0));
 	new_stash = (char *)malloc((sizeof(char) * new_size));
 	if (new_stash == NULL)
-		return (free_stash(&stash));
+		return (free_stash(stash, -1));
+	i = 0;
 	while (i < new_size - 1)
 	{
-		new_stash[i] = stash[i + (size_t)newline_index + 1];
+		new_stash[i] = (*stash)[i + (size_t)newline_index + 1];
 		i++;
 	}
 	new_stash[i] = '\0';
-	free(stash);
-	return (new_stash);
+	free(*stash);
+	*stash = new_stash;
+	return (0);
 }
